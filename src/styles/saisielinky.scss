@@ -1,0 +1,44 @@
+
+form{
+    border-radius: 20px;
+    padding-right: 52px;
+    height: 556px;
+    width: 400px;
+    background-color: var(--even);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-bottom: 10px;
+}
+label{
+    font-size: medium;
+    margin-right: 20px;
+}
+button{
+    width: 80px;
+    height: 30px;
+    font-weight: 600;
+    margin-top: 30px;
+    margin-right: 50px;
+}
+button:hover{
+    background-color: var(--carmin);
+    color: white;
+}
+ input{
+    margin-top: 10px;
+    font-size: 1.2rem;
+  
+}
+#totaux{
+    padding-right: 74px;
+    color: wheat;
+    display: block;
+    font-size: 1.1rem;
+    flex-direction: row;
+}
+
+
+
+
+

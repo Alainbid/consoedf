@@ -1,0 +1,50 @@
+.App-header {
+  background-color: var(--bleu0);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+.saisie {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+table {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.8rem;
+  thead{
+    background-color: rgb(80, 80, 79);
+  }
+  tr {
+    display: flex;
+    flex-direction: row;
+    // justify-content: flex-start;
+    border: 1px solid #6e0d0d; // Add border color to the existing border property
+  }
+  th {
+    padding: 0.5rem;
+    display: flex; // Add display property to make th and td in the same column
+    border: 1px;
+    border-color: #6e0d0d;
+    justify-content: center;
+    // min-width: 100px;
+    background-color: #6e0d0d; // Change background color to #6e0d0d
+    color: rgb(159, 152, 113); // Change text color to white
+    border-left: 1px solid #6e0d0d; // Add border-left property
+  }
+  td {
+    width: 100px;
+    padding: 0.5rem;
+    border: 1px;
+    border-color: #6e0d0d;
+    // justify-content: left;
+    // min-width: 60px;
+    border-left: 1px solid #6e0d0d; // Add border-left property
+  }
+}
+
+
