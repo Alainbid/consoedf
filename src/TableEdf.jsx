@@ -47,19 +47,19 @@ const TableEdf = () => {
   const jour = new Date().getDate();
 
   //console.log("jour ", jour);
-  let debut = new Date(annee + "/" + mois + "/01").getTime();
+  let debut = new Date(annee , mois-2 ,1,0).getTime();
   //console.log("debut ", debut);
 
-  if (jour === 1) {
-    //on change de mois
-    const lastJour = new Date(annee, mois - 1, 0).getDate();
-    // nombre de jours dans le mois précédant
-    debut = new Date(annee + "/" + mois + "/" + lastJour).getTime();
-    alert("nouveau mois");
-    console.log("nouveau mois");
-  }
+ 
 
   useEffect(() => {
+      if (jour === 1) {
+    const lastJour = new Date(annee, mois - 1, 0).getDate();
+    //console.log("lastJour ", lastJour);
+   const d = new Date(annee, mois-2, lastJour,0);
+  // console.log(annee, mois-1, lastJour);
+   debut = d.getTime();
+  }
     let lequery = query(
       codesCollectionRef,
       where("date", ">=", debut),
