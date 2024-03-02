@@ -56,7 +56,7 @@ const MaCourbe = ({ date, pHcBleu,pHpBleu,pHcBlanc,pHpBlanc,pHcRouge,pHpRouge,mo
     return <div>No data</div>;
   }
 
-  const laDate = date.map((date) => new Date(date).toLocaleDateString().substring(5, 2));
+  //const laDate = date.map((date) => new Date(date).toLocaleDateString().substring(5, 2));
 
   const data1 = {
     //labels: laDate,
