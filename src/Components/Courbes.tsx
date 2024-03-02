@@ -47,8 +47,8 @@ const MaCourbe = ({ date, pHcBleu,pHpBleu,pHcBlanc,pHpBlanc,pHcRouge,pHpRouge,mo
       },
       
       maintainAspectRatio: true, // This allows you to set the height and width directly
-      height: 600, // Set your desired height
-      width: 600, // Set your desired width
+      height: 605, // Set your desired height
+      width: 605, // Set your desired width
     },
   };
 
@@ -56,11 +56,14 @@ const MaCourbe = ({ date, pHcBleu,pHpBleu,pHcBlanc,pHpBlanc,pHcRouge,pHpRouge,mo
     return <div>No data</div>;
   }
 
-  const laDate = date.map((date) => new Date(date).toLocaleDateString().substring(0, 2));
+  const laDate = date.map((date) => new Date(date).toLocaleDateString().substring(5, 2));
 
   const data1 = {
-    labels: laDate,
+    //labels: laDate,
+labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10','11', '12', '13', '14', '15', '16', '17', '18', '19', '20','21', '22', '23', '24', '25', '26', '27', '28', '29', '30','31'],
     datasets: [
+//suit
+     
       {
         label: `H C Bleues`,
         data: pHcBleu,
@@ -76,8 +79,8 @@ const MaCourbe = ({ date, pHcBleu,pHpBleu,pHcBlanc,pHpBlanc,pHcRouge,pHpRouge,mo
       {
         label: `H C Blanches`,
         data: pHcBlanc,
-        borderColor: 'rgb(86,130,3)',
-        backgroundColor: 'rgba(86,130,3,1)',
+        borderColor: 'rgb(86,135,3)',
+        backgroundColor: 'rgba(86,135,3,1)',
       },
       {
         label: `H P Blanches`,
@@ -96,6 +99,12 @@ const MaCourbe = ({ date, pHcBleu,pHpBleu,pHcBlanc,pHpBlanc,pHcRouge,pHpRouge,mo
         data: pHpRouge,
         borderColor: 'rgb(921, 19, 332,0.3)',
         backgroundColor: 'rgba(921, 19, 332, 1)',
+      },
+      {
+        label: ` `,
+        data: [5, 5, 5, 5, 5, 5, 5, 5, 5, 5,5, 5, 5, 5, 5, 5, 5, 5, 5, 5,5, 5, 5, 5, 5, 5, 5, 5, 5, 5,5],
+        borderColor: 'grey',
+        backgroundColor: 'grey',
       },
     ],
   };

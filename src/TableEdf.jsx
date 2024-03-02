@@ -47,7 +47,7 @@ const TableEdf = () => {
   const jour = new Date().getDate();
 
   //console.log("jour ", jour);
-  let debut = new Date(annee , mois-2 ,1,0).getTime();
+  let debut = new Date(annee , mois-1 ,1,0).getTime();
   //console.log("debut ", debut);
 
  
@@ -56,9 +56,7 @@ const TableEdf = () => {
       if (jour === 1) {
     const lastJour = new Date(annee, mois - 1, 0).getDate();
     //console.log("lastJour ", lastJour);
-   const d = new Date(annee, mois-2, lastJour,0);
-  // console.log(annee, mois-1, lastJour);
-   debut = d.getTime();
+    debut = new Date(annee, mois-2, lastJour,0).getTime();
   }
     let lequery = query(
       codesCollectionRef,
