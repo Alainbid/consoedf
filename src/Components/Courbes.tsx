@@ -10,7 +10,6 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import { Line, Bar } from 'react-chartjs-2';
 
 type Props = {
   date: number[];
@@ -56,10 +55,8 @@ const MaCourbe = ({ date, pHcBleu,pHpBleu,pHcBlanc,pHpBlanc,pHcRouge,pHpRouge,mo
     return <div>No data</div>;
   }
 
-  //const laDate = date.map((date) => new Date(date).toLocaleDateString().substring(5, 2));
-
   const data1 = {
-    //labels: laDate,
+    
 labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10','11', '12', '13', '14', '15', '16', '17', '18', '19', '20','21', '22', '23', '24', '25', '26', '27', '28', '29', '30','31'],
     datasets: [
 //suit
