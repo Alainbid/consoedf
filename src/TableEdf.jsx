@@ -1,7 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { db } from "./FirebaseFirestore";
 import "./styles/tableedf.scss";
-import { collection, getDocs, query, orderBy, where } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  orderBy,
+  where,
+  addDoc,
+  deleteDoc,
+} from "firebase/firestore";
 import SaisieLinky from "./Components/SaisieLinky.js";
 import MaCourbe from "./Components/Courbes.tsx";
 
@@ -38,6 +46,7 @@ const TableEdf = () => {
   var totalJour = [0, 0, 0, 0, 0, 0];
   const [leTotalJour, setLeTotalJour] = useState(0);
   const [leTotalMois, setLeTotalMois] = useState(0);
+  var razmois = useRef(true);
 
   //calcul des dates
   const mois = new Date().getMonth() + 1;
@@ -47,17 +56,59 @@ const TableEdf = () => {
   const jour = new Date().getDate();
 
   //console.log("jour ", jour);
-  let debut = new Date(annee , mois-1 ,1,0).getTime();
+  let debut = new Date(annee, mois - 2, 1, 0).getTime();
   //console.log("debut ", debut);
 
- 
+  // Callback function to update the table when the form is submitted
+  const updateTable = async () => {
+    // Refetch the data
+    let lequery = query(codesCollectionRef, orderBy("date", "desc"));
+    const updatedData = await getDocs(lequery);
+    setListe(updatedData.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+  };
+
+  if (jour === 1 && !razmois.current) {
+    //dernier jour du mois précédant
+    const lastJour = new Date(annee, mois - 1, 0).getDate();
+    console.log("lastJour ", lastJour);
+    //il faut créer un enregistrement vide à 0h5
+    const liste = {
+      hpbleu: 0,
+      hcbleu: 0,
+      hpblanc: 0,
+      hcblanc: 0,
+      hprouge: 0,
+      hcrouge: 0,
+      prod: 0,
+      note: "début du mois",
+    };
+    try {
+      //on ajoute comme premier enregistrement du mois
+      const docRef = addDoc(codesCollectionRef, {
+        hpbleu: Number(liste.hpbleu),
+        hcbleu: Number(liste.hcbleu),
+        hpblanc: Number(liste.hpblanc),
+        hcblanc: Number(liste.hcblanc),
+        hprouge: Number(liste.hprouge),
+        hcrouge: Number(liste.hcrouge),
+        prod: Number(liste.prod),
+        note: liste.note,
+        date: new Date(annee, mois - 1, 1, 0, 5).getTime(),
+      });
+      console.log("Document written with ID: ", docRef.id);
+      updateTable();
+
+      //reset();
+    } catch (error) {
+      console.error("Error adding document: ", error);
+    }
+
+    razmois.current = true;
+    // debut = new Date(annee, mois-1, lastJour,0).getTime();
+    // return;
+  }
 
   useEffect(() => {
-      if (jour === 1) {
-    const lastJour = new Date(annee, mois - 1, 0).getDate();
-    //console.log("lastJour ", lastJour);
-    debut = new Date(annee, mois-2, lastJour,0).getTime();
-  }
     let lequery = query(
       codesCollectionRef,
       where("date", ">=", debut),
@@ -92,6 +143,7 @@ const TableEdf = () => {
 
         const n = liste.length;
         // calcul du total depuis le debut du mois
+
         totalPrix[1] =
           (liste[0].hpbleu - liste[n - 1].hpbleu) * prix.prixhpbleu;
         totalPrix[0] =
@@ -113,14 +165,6 @@ const TableEdf = () => {
       calculateTotal(liste);
     }
   }, [leTotalJour, leTotalMois, liste]);
-
-  // Callback function to update the table when the form is submitted
-  const updateTable = async () => {
-    // Refetch the data
-    let lequery = query(codesCollectionRef, orderBy("date", "desc"));
-    const updatedData = await getDocs(lequery);
-    setListe(updatedData.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-  };
 
   const handleCellHover = (event) => {
     event.target.style.cursor = "pointer";
