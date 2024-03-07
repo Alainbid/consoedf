@@ -1,94 +1,138 @@
-
-import './styles/App.scss';
+import "./styles/App.scss";
 import { db } from "./FirebaseFirestore";
 import TableEdf from "./TableEdf";
 import "./styles/tableedf.scss";
-import { collection, getDocs, query, where,} from "firebase/firestore";
-import React, { useState, useEffect, } from "react";
+import {
+  collection,
+  getDocs,
+  deleteDoc,
+  query,
+  where,
+  writeBatch,
+} from "firebase/firestore";
+import React, { useState, useEffect } from "react";
+import { set } from "react-hook-form";
 
+function App() {
+//   //pour supprimer certains documents d'une collection
+//   const codesCollectionRef = collection(db, "serre");
+//   const [docTrouvés, setDocTrouvés] = useState(0);
+//   const [leTotalDebut, setLetotalDebut] = useState(0);
+//   const [texte, setTexte] = useState('');
+//   const [champ, setChamp] = useState('');
 
- function App() {
-// //pour supprimer certains documents d'une collection
-// const codesCollectionRef = collection(db, "adebug");
-// const [ audebut , setAudebut]= useState(0);
-// const [ letotelDebut , setLetotelDebut]= useState(0);
-// const [ letotelFin , setLetotelFin]= useState(0);
-
-// const getDocumentCount = async () => {
-//   try {
-//     const querySnapshot = await getDocs(codesCollectionRef);
-//     const count = querySnapshot.size;
-//     setLetotelDebut(count);
-//   } catch (error) {
-//     console.error("Error getting document count: ", error);
-//   }
-// };
-
-// const getDocumentAprès = async () => {
-//   try {
-//     const querySnapshot = await getDocs(codesCollectionRef);
-//     // Fetch and update the remaining documents
-//     const remainingDocuments = [];
-//     querySnapshot.forEach((doc) => {
-//       remainingDocuments.push(doc.data());
-//     });
-//     setLetotelFin(remainingDocuments.length );
-//     // Now 'remainingDocuments' holds the data of the remaining documents
-//     console.log('Nbre Documents après delete:', remainingDocuments.length);
-//   } catch (error) {
-//     console.error("Error getting document count: ", error);
-//   }
-// };
-
-// const getData = async () => {
-// getDocumentCount();
-// // ici on choisit les critères de sélection des documents à supprimer
-// const lequery = query(codesCollectionRef, where('banque', '==', 'Bourso'));
-
-//   try {
-//     const querySnapshot = await getDocs(lequery);
-//     const updatedListe = [];
-//     querySnapshot.forEach((doc) => {
-//      // console.log(doc.ref, " => ", doc.data().humidite);
-//       updatedListe.push(doc.ref); // Push DocumentReference to the array
-//     });
-//     setAudebut(updatedListe.length);
-
+//   const getDocumentCount = async () => {
+//     const leQuery = query(codesCollectionRef);
 //     try {
-//       // Use Promise.all with the map function to wait for all deletions to complete
-//       await Promise.all(updatedListe.map(async (docRef) => {
-//         //-------------------------------------------------------------- */
-
-//        // await deleteDoc(docRef);
-
-//        //----------------------------------------------------------------*/
-//         console.log("Document successfully deleted!");
-//       }));
-//       // Fetch remaining documents and update 'letotelFin'
-//       getDocumentAprès();
-//     } catch (e) {
-//       console.log('error', e);
+//       const querySnapshot = await getDocs(leQuery);
+//       setLetotalDebut(querySnapshot.size );
+//     } catch (error) {
+//       console.error("Error getting document count: ", error);
 //     }
-//   } catch (error) {
-//     console.error("Error getting documents: ", error);
-//   }
+//   };
+
+
+// useEffect(() => {
+//   if (leTotalDebut === 0){  getDocumentCount();}
+//   }, []);
+
+//   const   handelChange = (e) => {
+//     var letexte = e.target.value;
+//     if (!isNaN(letexte)) {
+//       letexte = parseInt(letexte);
+//       // If it's a number
+//     }
+//       else if (letexte.toLowerCase() === 'true' ) {
+//         // If it's a boolean
+//         letexte = true;
+//     } else if (letexte.toLowerCase() === 'false') {
+//       letexte = false;
+//     } 
+//     setTexte(letexte, () => {
+//       console.log("texte", texte); // Log inside the callback
+//     });
+//   };
+
+//   const   modifChamp = (e) => {
+//     setChamp(e.target.value);
+//    // console.log("champ", champ);
+//   };
+
+//   const handelDelete = async () => {
+//     const batch = writeBatch(db);
+//     const lequery = query(codesCollectionRef, where(champ, "==", texte));
+//     try {
+//       const querySnapshot = getDocs(lequery);
+//       querySnapshot.then((querySnapshot) => {
+//         querySnapshot.forEach((doc) => {
+//         // batch.delete(doc.ref);
+//         });
+//         batch.commit().then(() => {
+//           console.log("Documents successfully deleted!");
+//         });
+//       });
+//     } catch (error) {
+//       console.error("Error deleting documents: ", error);
+//     }
+// getDocumentAprès();
+//   };
+
+  
+//   const getDocumentAprès = async () => {
+//     try {
+//    var x = await getDocs(query(codesCollectionRef))
+//      // Now 'remainingDocuments' holds the data of the remaining documents
+//      console.log("Nbre Documents après delete:", x.size);
+//      var texteFin = "nombre de documents après modification " + x.size;
+//      document.getElementById("après").innerHTML = texteFin;
+//    } catch (error) {
+//      console.error("Error getting document count: ", error);
+//    }
+//  };
+
+//   const chercher =  async() => { 
+//     const enteredText = document.getElementById("letexte").value;
+//   console.log("texte chercher", enteredText);
+//     try {
+//       const querySnapshot = await getDocs( query(codesCollectionRef, where(champ, "==", texte)))
+//       setDocTrouvés(querySnapshot.size);
+//     } catch (error) {
+//       console.error("Error getting documents: ", error);
+//     }
 // };
 
 // useEffect(() => {
-//   getData();
-// }, []);
+//   chercher();
+// }, [texte]);
 
 
- 
   return (
-     <div className="App">
-    {/*    <h1 style={{color:'black'}}>Suppression de certains documents d'une collection </h1>
-        <h2 style={{color:'black'}}>nombre de documents dans la collection {letotelDebut}</h2>
-        <h2 style={{color:'green'}}>nombre de documents sélectionnés par where {audebut}</h2>
-        <h2 style={{color:'red'}}>nombre de documents après modification {letotelFin}</h2> */}
-         <TableEdf/> 
-        
+    <div className="App">
+      {/* <h1 style={{ color: "black" }}>
+        Suppression de certains documents d'une collection{" "}
+      </h1>
+       
+      <h2 style={{ color: "black" }}>
+        nombre total de documents dans la collection {leTotalDebut}
+      </h2>
       
+      <form className="form">
+      <label>Rechercher sur 
+          <input id="leChamp" type="text" value={champ} 
+           onChange={(event) => modifChamp(event)} 
+            /></label>
+      <label>Valeur à supprimer
+          <input id="letexte" type="text" value={texte} 
+           onChange={(event) => handelChange(event)} 
+            /></label>
+          </form>
+
+          <h2 style={{ color: "green" }}>
+          nombre de documents sélectionnés par where {docTrouvés}
+          </h2>
+          <button onClick={handelDelete}>Supprimer</button>
+      <h2 style={{ color: "red" }} id="après"></h2> */}
+      <TableEdf/> 
     </div>
   );
 }
