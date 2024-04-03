@@ -10,9 +10,10 @@ import {
 } from "firebase/firestore";
 import SaisieLinky from "./Components/SaisieLinky.js";
 import MaCourbe from "./Components/Courbes.tsx";
+import de from "faker/lib/locales/de/index.js";
 
 const TableEdf = () => {
-  const codesCollectionRef = collection(db, "edf");
+  const edfCollectionRef = collection(db, "edf");
   const [liste, setListe] = useState([]);
   const [loading, setLoading] = useState(true); // Add loading state
   const prix = {
@@ -49,40 +50,27 @@ const TableEdf = () => {
   const mois = new Date().getMonth() + 1;
   const annee = new Date().getFullYear();
   const jour = new Date().getDate();
-  let debut = new Date(annee, mois - 1, 1, 0).getTime();
-  //console.log("debut ", debut);
-  jour === 1 ?  debut = new Date(annee, mois - 2, 1, 0).getTime() : debut = new Date(annee, mois - 1, 1, 0).getTime();
+  // console.log("mois ", mois);
+  // console.log("jour", jour);
+  let debut = 0;
+ 
+  jour < 3 ?  debut = new Date(annee, mois - 2, 1, 0).getTime() : debut = new Date(annee, mois-1 , 1, 0).getTime();
+  // console.log("debut1 ", debut); 
 
   // Callback function to update the table when the form is submitted
   const updateTable = async () => {
     // Refetch the data
-    let lequery = query(codesCollectionRef, where("date", ">=", debut), orderBy("date", "desc"));
+    let lequery = query(edfCollectionRef, where("date", ">=", debut), orderBy("date", "desc"));
     const updatedData = await getDocs(lequery);
     setListe(updatedData.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-    //console.log("updatedData ", updatedData);
+    console.log("updatedData ", updatedData);
   };
 
-
   useEffect(() => {
-   
-    let lequery = query(
-      codesCollectionRef,
-      where("date", ">=", debut),
-      orderBy("date", "desc")
-    );
+    updateTable();
+    setLoading(false);
+  }, []);
 
-    
-    const getData = async () => {
-      try {
-        const data = await getDocs(lequery);
-        setListe(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-        setLoading(false);
-      } catch (error) {
-        console.error("Error getting documents: ", error);
-      }
-    };
-    getData();
-  }, [codesCollectionRef, liste, debut]);
 
   useEffect(() => {
     if (liste.length > 0 && leTotalJour === 0 && leTotalMois === 0) {
@@ -120,7 +108,7 @@ const TableEdf = () => {
       };
       calculateTotal(liste);
     }
-  }, [leTotalJour, leTotalMois, liste]);
+  }, [leTotalJour, leTotalMois,  totalJour, totalPrix]);
 
   const handleCellHover = (event) => {
     event.target.style.cursor = "pointer";

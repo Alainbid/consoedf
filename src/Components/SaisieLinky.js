@@ -56,7 +56,7 @@ const SaisieLinky = ({ jourdavant
       prod: "",
       note: "",
     });
-    //window.location.reload();
+    window.location.reload();
   };
 
   const focusNextInput = (name) => {
