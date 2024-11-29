@@ -10,6 +10,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "chart.js": "^4.4.1",
+    "consoedf": "file:",
     "dotenv": "^16.4.1",
     "faker": "5.5.3",
     "firebase": "^10.8.0",
@@ -18,6 +19,7 @@
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.50.0",
+    "react-router-dom": "^7.0.1",
     "react-scripts": "^5.0.1",
     "sass": "^1.70.0"
   },

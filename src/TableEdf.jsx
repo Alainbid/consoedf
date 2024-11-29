@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { db } from "./FirebaseFirestore";
 import "./styles/tableedf.scss";
 import {
@@ -10,7 +10,6 @@ import {
 } from "firebase/firestore";
 import SaisieLinky from "./Components/SaisieLinky.js";
 import MaCourbe from "./Components/Courbes.tsx";
-import de from "faker/lib/locales/de/index.js";
 
 const TableEdf = () => {
   const edfCollectionRef = collection(db, "edf");
@@ -50,7 +49,7 @@ const TableEdf = () => {
   const mois = new Date().getMonth() + 1;
   const annee = new Date().getFullYear();
   const jour = new Date().getDate();
-  // console.log("mois ", mois);
+   console.log("mois ", mois);
   // console.log("jour", jour);
   let debut = 0;
  
@@ -127,22 +126,23 @@ const TableEdf = () => {
   //pour préparer les données pour le graphique
   const lesdates = liste.map((item) => item.date);
   const revDates = lesdates.reverse();
-  var lesproductions = liste.map((item) => (item.hcbleu - 28680) * 0.129);
+  var lesproductions = liste.map((item) => (item.hcbleu - 28680) * prix.prixhcbleu);
   const revProdHcB = lesproductions.reverse();
-  lesproductions = liste.map((item) => (item.hpbleu - 23964) * 0.161);
+  lesproductions = liste.map((item) => (item.hpbleu - 23964) * prix.prixhpbleu);
   const revProdHpB = lesproductions.reverse();
-  lesproductions = liste.map((item) => (item.hcblanc - 1351) * 0.148);
+  lesproductions = liste.map((item) => (item.hcblanc - 1351) * prix.prixhcblanc);
   const revProdHcBl = lesproductions.reverse();
-  lesproductions = liste.map((item) => (item.hpblanc - 1299) * 0.189);
+  lesproductions = liste.map((item) => (item.hpblanc - 1299) * prix.prixhpblanc);
   const revProdHpBl = lesproductions.reverse();
-  lesproductions = liste.map((item) => (item.hcrouge - 785) * 0.157);
+  lesproductions = liste.map((item) => (item.hcrouge - 785) * prix.prixhcrouge);
   const revProdHcR = lesproductions.reverse();
-  lesproductions = liste.map((item) => (item.hprouge - 956) * 0.756);
+  lesproductions = liste.map((item) => (item.hprouge - 956) * prix.prixhprouge);
   const revProdHpR = lesproductions.reverse();
 
   return (
     <div className="App-header">
       <h3>Consommations Linky {monthTag[mois - 1]}</h3>
+
 
       {!loading && liste.length > 0 && (
         <SaisieLinky

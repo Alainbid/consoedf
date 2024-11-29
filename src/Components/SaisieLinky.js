@@ -3,8 +3,11 @@ import { addDoc, collection } from "firebase/firestore";
 import { db } from "../FirebaseFirestore.jsx";
 import "../styles/saisielinky.scss";
 
+
 const SaisieLinky = ({ jourdavant
 , updateTable, totalJour, totalMois,lemois,totalProd }) => {
+
+ 
 
   const [liste, setListe] = useState(
     jourdavant || {
@@ -19,7 +22,11 @@ const SaisieLinky = ({ jourdavant
     }
   );
   const collectionRef = collection(db, "edf");
-
+ 
+  const openConsoParMois = () => {
+    //ouverture de la fenêtre des consos par mois
+     window.open("/conso-par-mois", "_blank", "width=800,height=800");
+  };
 
   /** handle submit */
   const handleSubmit = async (e) => {
@@ -149,10 +156,14 @@ const SaisieLinky = ({ jourdavant
           />
         </div>
         <span>
-          <button type="submit">Ajouter</button>
-          <button type="reset" onClick={reset} style={{ color: "red" }}>
+        <button type="button" onClick={openConsoParMois}>
+          Cout/Mois
+        </button> 
+        <button type="reset" onClick={reset} style={{ color: "red" }}>
             Annuler
           </button>
+          <button type="submit">Ajouter</button>
+         
         </span>
         <li id="totaux" style={{ marginTop: "22px" }}>
           Consommation du jour = {totalJour.toFixed(2)}€{" "}
