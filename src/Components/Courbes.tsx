@@ -52,16 +52,24 @@ const MaCourbe = ({ date, pHcBleu,pHpBleu,pHcBlanc,pHpBlanc,pHcRouge,pHpRouge,mo
     },
   };
 
+
+
   if (date === undefined || pHcBleu === undefined) {
     return <div>No data</div>;
   }
 
+   // Generate labels dynamically
+   const labels = date.map((timestamp) => {
+    const day = new Date(timestamp).getUTCDate();
+    return isNaN(day) ? '.' : day.toString();
+  });
+
   const data1 = {
     
-labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10','11', '12', '13', '14', '15', '16', '17', '18', '19', '20','21', '22', '23', '24', '25', '26', '27', '28', '29', '30','31'],
+    //labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20','21', '22', '23', '24', '25', '26', '27', '28', '29', '30','31'],
+    labels,
     datasets: [
-//suit
-     
+
       {
         label: `H C Bleues`,
         data: pHcBleu,
@@ -100,7 +108,7 @@ labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10','11', '12', '13', '14
       },
       {
         label: ` `,
-        data: [5, 5, 5, 5, 5, 5, 5, 5, 5, 5,5, 5, 5, 5, 5, 5, 5, 5, 5, 5,5, 5, 5, 5, 5, 5, 5, 5, 5, 5,5],
+        data: [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,5],
         borderColor: 'grey',
         backgroundColor: 'grey',
       },
