@@ -2,13 +2,12 @@
 form{
     border-radius: 20px;
     padding-right: 52px;
-    height: 556px;
-    width: 400px;
+  
     background-color: var(--even);
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    margin-bottom: 5px;
+   
 }
 label{
     font-size: medium;
@@ -19,8 +18,9 @@ button{
     width: 80px;
     height: 30px;
     font-weight: 600;
-    margin-top: 30px;
-    margin-right: 28px;
+    margin-top: 18px;
+    margin-right: 18px;
+    margin-bottom: 10px;
 }
 button:hover{
     background-color: var(--carmin);

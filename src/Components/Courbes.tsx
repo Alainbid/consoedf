@@ -42,8 +42,8 @@ const MaCourbe = ({ date, pHcBleu,pHpBleu,pHcBlanc,pHpBlanc,pHcRouge,pHpRouge,mo
         position: 'top' as const,
       },
       title: {
-        display: true,
-        text: 'Consommations ' + mois ,
+        // display: true,
+        // text: 'Consommations ' + mois ,
       },
       
       maintainAspectRatio: true, // This allows you to set the height and width directly
@@ -51,8 +51,6 @@ const MaCourbe = ({ date, pHcBleu,pHpBleu,pHcBlanc,pHpBlanc,pHcRouge,pHpRouge,mo
       width: 605, // Set your desired width
     },
   };
-
-
 
   if (date === undefined || pHcBleu === undefined) {
     return <div>No data</div>;
@@ -65,8 +63,6 @@ const MaCourbe = ({ date, pHcBleu,pHpBleu,pHcBlanc,pHpBlanc,pHcRouge,pHpRouge,mo
   });
 
   const data1 = {
-    
-    //labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20','21', '22', '23', '24', '25', '26', '27', '28', '29', '30','31'],
     labels,
     datasets: [
 
@@ -106,20 +102,16 @@ const MaCourbe = ({ date, pHcBleu,pHpBleu,pHcBlanc,pHpBlanc,pHcRouge,pHpRouge,mo
         borderColor: 'rgb(921, 19, 332,0.3)',
         backgroundColor: 'rgba(921, 19, 332, 1)',
       },
-      {
-        label: ` `,
-        data: [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,5],
-        borderColor: 'grey',
-        backgroundColor: 'grey',
-      },
+     
     ],
   };
 
 
   return (
     <div className='chart'>
-      <Line style={{ background: 'wlightgrey'  , height:'500px ', width:'800px'}} 
+      <Line style={{ background: 'white'  , height:'500px ', width:'800px'}} 
       options={options} data={data1} />
+      <p></p>
     </div>
   )
 }

@@ -163,9 +163,10 @@ const SaisieLinky = ({ jourdavant
             Annuler
           </button>
           <button type="submit">Ajouter</button>
-         
         </span>
-        <li id="totaux" style={{ marginTop: "22px" }}>
+
+        
+      </form><li id="totaux" style={{ marginTop: "22px" }}>
           Consommation du jour = {totalJour.toFixed(2)}€{" "}
         </li>
         <li id="totaux" style={{ marginTop: "5px" }}>
@@ -175,9 +176,10 @@ const SaisieLinky = ({ jourdavant
         <li id="totaux" style={{ marginTop: "5px" }}>
           {" "}
          Total revendu = {((totalProd-4981)*0.1).toFixed(2)}€
-        </li>
-      </form>
-      <div></div>
+        </li><p></p>
+      {/* <div>
+        
+      </div> */}
     </div>
   );
 };
