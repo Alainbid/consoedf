@@ -109,7 +109,7 @@ const MaCourbe = ({ date, pHcBleu,pHpBleu,pHcBlanc,pHpBlanc,pHcRouge,pHpRouge,mo
 
   return (
     <div className='chart'>
-      <Line style={{ background: 'white'  , height:'500px ', width:'800px'}} 
+      <Line style={{ background: 'wheat'  , height:'500px ', width:'800px'}} 
       options={options} data={data1} />
       <p></p>
     </div>

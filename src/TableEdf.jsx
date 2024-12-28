@@ -49,7 +49,7 @@ const TableEdf = () => {
   const mois = new Date().getMonth() + 1;
   const annee = new Date().getFullYear();
   const jour = new Date().getDate();
-   console.log("mois ", mois);
+  // console.log("mois ", mois);
   // console.log("jour", jour);
   let debut = 0;
  
@@ -62,7 +62,7 @@ const TableEdf = () => {
     let lequery = query(edfCollectionRef, where("date", ">=", debut), orderBy("date", "desc"));
     const updatedData = await getDocs(lequery);
     setListe(updatedData.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-    console.log("updatedData ", updatedData);
+  //  console.log("updatedData ", updatedData);
   };
 
   useEffect(() => {

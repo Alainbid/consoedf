@@ -29,15 +29,21 @@ const ConsoParmois = () => {
 
   const [monthlyData, setMonthlyData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [firstMonth, setFirstMonth] = useState(0);
+  const [lastMonth, setLastMonth] = useState(0);
 
   const annee = 2024;
 
   useEffect(() => {
     const fetchMonthlyData = async () => {
       try {
-        const monthsToFetch = [5,6,7,8,9,10,11,12]; // Fetch for June up to novembre
+        var monthsToFetch = [];
+        for (let i = firstMonth+1; i <= lastMonth +1; i++) {
+          monthsToFetch.push(i);
+          
+        }
+
         const allData = [];
-        //on execute le query pour tous les mois sélectionnés
         for (const mois of monthsToFetch) {
           const debut = new Date(`${annee}-${mois - 1}-01`).getTime();
           const fin = new Date(`${annee}-${mois}-01`).getTime();
@@ -50,16 +56,15 @@ const ConsoParmois = () => {
             orderBy("date", "asc")
           );
 
+          if(monthsToFetch.length > 1) {
+            console.log("monthsToFetch", monthsToFetch);
           const querySnapshot = await getDocs(lequery);
           const data = querySnapshot.docs.map((doc) => doc.data());
-          // à chaque mois on ajoute les datas du mois dans array alldata
           allData.push({ mois, data });
-          console.log("alldata", allData)
+          }
         }
-        // fin boucle for
 
-
-        setMonthlyData(allData); // Update state with data for all months
+        setMonthlyData(allData);
         setIsLoading(false);
       } catch (error) {
         console.error("Erreur lors de la récupération des données Firestore: ", error);
@@ -68,17 +73,15 @@ const ConsoParmois = () => {
     };
 
     fetchMonthlyData();
-  }, [annee]);
+  }, [annee, firstMonth, lastMonth]);
 
-
-  var calculateTotals = (data) => {
-    // si on n'a qu'un data on arrête
+  const calculateTotals = (data) => {
     if (data.length < 2) return { subtotals: [], grandTotal: 0 };
 
     const first = data[0];
     const last = data[data.length - 1];
     let grandTotal = 0;
-    //calcul du prix pour chaque data
+
     const subtotals = Object.keys(prix).map((key) => {
       const total = ((last[key] || 0) - (first[key] || 0)) * prix[key];
       grandTotal += total;
@@ -88,51 +91,75 @@ const ConsoParmois = () => {
     return { subtotals, grandTotal };
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <div>
-      <h2 className="titre">Cout EDF par mois</h2>
-      {monthlyData.length > 0 ? (
-        monthlyData.map(({ mois, data }) => {
-          const { subtotals, grandTotal } = calculateTotals(data);
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : (
+        <>
+          <h2 className="titre">Cout EDF par mois</h2>
+          <form style={{ display: "flex", justifyContent: "center", width:"166px",marginLeft:"300px", paddingBottom:"10px"}}>
+         
+            <input    
+            style={{width:"110px"}}
+              type="number"
+              placeholder="mois début"
+              onChange={(e) => setFirstMonth(Number(e.target.value  ))}
+            />   
+          
+            <input
+              style={{width:"110px"}}
+              type="number"
+              placeholder="mois fin"
+              onChange={(e) => setLastMonth(Number(e.target.value ))}
+            />
+          </form>
 
-          return (
-            <div key={mois}>
-            
-              {data.length > 0 ? (
-                <ul>
-                  {data.map((item, index) => (
-                    <ul className="ligne1" key={index}>
-                      {new Date(item.date).toLocaleDateString()} {" "}
-                      {Object.keys(prix).map((key) => (
-                        <span key={key}>
-                          {key} = {item[key] || "N/A"} {" "}
-                        </span> 
-                      ))}
-                    </ul>
-                  ))}
-                </ul>
+          {firstMonth > 0 && lastMonth > 0 && (
+            <div>
+              {monthlyData.length > 0 ? (
+                monthlyData.map(({ mois, data }) => {
+                  const { subtotals, grandTotal } = calculateTotals(data);
+
+                  return (
+                    <div key={mois}>
+                      {data.length > 0 ? (
+                        <ul>
+                          {data.map((item, index) => (
+                            <ul className="ligne1" key={index}>
+                              {new Date(item.date).toLocaleDateString()}{" "}
+                              {Object.keys(prix).map((key) => (
+                                <span key={key}>
+                                  {key} = {item[key] || "N/A"}{" "}
+                                </span>
+                              ))}
+                            </ul>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p>Aucune donnée disponible pour ce mois.</p>
+                      )}
+                      {subtotals.length > 0 && (
+                        <>
+                          {subtotals.map(({ key, total }) => (
+                            <li className="ligne" key={key}>
+                              Total {key} = {total.toFixed(2)} €
+                            </li>
+                          ))}
+                          <strong className="ligne">
+                            Total {monthTag[mois - 2]} = {grandTotal.toFixed(2)} €
+                          </strong>
+                        </>
+                      )}
+                    </div>
+                  );
+                })
               ) : (
-                <p>Aucune donnée disponible pour ce mois.</p>
-              )}
-              {subtotals.length > 0 && (
-                <>
-                  {subtotals.map(({ key, total }) => (
-                    <li className="ligne" key={key}>
-                      Total {key} = {total.toFixed(2)} €
-                    </li>
-                  ))}
-                  <strong className="ligne"> Total {monthTag[mois - 2]} = {grandTotal.toFixed(2)} €</strong>
-                </>
+                <p>Aucune donnée disponible</p>
               )}
             </div>
-          );
-        })
-      ) : (
-        <p>Aucune donnée disponible</p>
+          )}
+        </>
       )}
     </div>
   );
