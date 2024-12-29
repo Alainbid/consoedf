@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { collection, getDocs, query, orderBy, where } from "firebase/firestore";
 import { db } from "../FirebaseFirestore.jsx";
 import "../styles/consomois.scss";
+
 
 const ConsoParmois = () => {
   const prix = {
@@ -28,11 +29,20 @@ const ConsoParmois = () => {
   ];
 
   const [monthlyData, setMonthlyData] = useState([]);
+  const lastMonthInputRef = useRef(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [firstMonth, setFirstMonth] = useState(0);
-  const [lastMonth, setLastMonth] = useState(0);
+  const [firstMonth, setFirstMonth] = useState('');
+  const [lastMonth, setLastMonth] = useState('');
+  const [dernierMois, setDernierMois] = useState('');
+  const [premierMois, setPremierMois] = useState('');
 
-  const annee = 2024;
+  const firstAnnee  = new Date().getFullYear();
+  var lastAnnee = new Date().getFullYear();
+  const quelMois = new Date().getMonth();
+  if(quelMois >= 0 && quelMois <= 4 ){
+    lastAnnee = firstAnnee - 1;
+  }
+
 
   useEffect(() => {
     const fetchMonthlyData = async () => {
@@ -40,13 +50,12 @@ const ConsoParmois = () => {
         var monthsToFetch = [];
         for (let i = firstMonth+1; i <= lastMonth +1; i++) {
           monthsToFetch.push(i);
-          
         }
 
         const allData = [];
         for (const mois of monthsToFetch) {
-          const debut = new Date(`${annee}-${mois - 1}-01`).getTime();
-          const fin = new Date(`${annee}-${mois}-01`).getTime();
+          const debut = new Date(`${firstAnnee}-${mois - 1}-01`).getTime();
+          const fin = new Date(`${lastAnnee}-${mois}-01`).getTime();
 
           const collectionRef = collection(db, "edf");
           const lequery = query(
@@ -58,22 +67,23 @@ const ConsoParmois = () => {
 
           if(monthsToFetch.length > 1) {
             console.log("monthsToFetch", monthsToFetch);
-          const querySnapshot = await getDocs(lequery);
-          const data = querySnapshot.docs.map((doc) => doc.data());
-          allData.push({ mois, data });
+            const querySnapshot = await getDocs(lequery);
+            const data = querySnapshot.docs.map((doc) => doc.data());
+            allData.push({ mois, data });
           }
         }
 
         setMonthlyData(allData);
         setIsLoading(false);
-      } catch (error) {
+      } 
+      catch (error) {
         console.error("Erreur lors de la récupération des données Firestore: ", error);
         setIsLoading(false);
       }
     };
 
     fetchMonthlyData();
-  }, [annee, firstMonth, lastMonth]);
+  }, [lastAnnee, firstMonth, lastMonth, firstAnnee]);
 
   const calculateTotals = (data) => {
     if (data.length < 2) return { subtotals: [], grandTotal: 0 };
@@ -91,28 +101,64 @@ const ConsoParmois = () => {
     return { subtotals, grandTotal };
   };
 
+  const verifierFirstMonth = (value) => {
+    if ((value >= 1 && value <= 5) || value > 12) {
+      setFirstMonth(6);
+      setPremierMois  (6);
+    } else {
+      setFirstMonth(value);
+    }
+    lastMonthInputRef.current.focus();  // Call verifierLastMonth when Enter is pressed
+  };
+
+  const verifierLastMonth = (value) => {
+  if((value < firstMonth && firstAnnee === lastAnnee )|| value > 12){
+      alert("Le mois de fin doit être supérieur au mois de début et inférieur à 12");
+      setLastMonth(12)
+      setDernierMois(12);
+    }else{
+      setLastMonth(value);
+    }
+  };
+
   return (
     <div>
       {isLoading ? (
         <div>Loading...</div>
       ) : (
-        <>
+        <div>
           <h2 className="titre">Cout EDF par mois</h2>
-          <form style={{ display: "flex", justifyContent: "center", width:"166px",marginLeft:"300px", paddingBottom:"10px"}}>
-         
+          <form style={{ display: "flex", justifyContent: "center", width:"186px",marginLeft:"282px", paddingBottom:"10px"}}>
+         <div>
+            <label >Mois début</label>
             <input    
-            style={{width:"110px"}}
+              style={{width:"50px"}}
               type="number"
-              placeholder="mois début"
-              onChange={(e) => setFirstMonth(Number(e.target.value  ))}
+              value={premierMois}
+              onChange={(e) => setPremierMois(e.target.value)} // Assuming you have a state setter for lastMonth
+              onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                verifierFirstMonth(Number(e.target.value));
+                
+              }
+            }}
             />   
-          
-            <input
-              style={{width:"110px"}}
-              type="number"
-              placeholder="mois fin"
-              onChange={(e) => setLastMonth(Number(e.target.value ))}
-            />
+          </div>
+          <div>
+          <label>Mois fin</label>
+          <input
+            ref={lastMonthInputRef}
+            style={{ width: "50px", marginBottom: "8px" }}
+            type="number"
+            value={dernierMois}
+            onChange={(e) => setDernierMois(e.target.value)} // Assuming you have a state setter for lastMonth
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                verifierLastMonth(Number(e.target.value)); // Call verifierLastMonth when Enter is pressed
+              }
+            }}
+          />
+</div>
           </form>
 
           {firstMonth > 0 && lastMonth > 0 && (
@@ -137,7 +183,7 @@ const ConsoParmois = () => {
                           ))}
                         </ul>
                       ) : (
-                        <p>Aucune donnée disponible pour ce mois.</p>
+                        <p>Recherche des données disponibles...</p>
                       )}
                       {subtotals.length > 0 && (
                         <>
@@ -155,11 +201,11 @@ const ConsoParmois = () => {
                   );
                 })
               ) : (
-                <p>Aucune donnée disponible</p>
+                <p>Recherche des données disponibles...</p>
               )}
             </div>
           )}
-        </>
+        </div>
       )}
     </div>
   );

@@ -81,7 +81,7 @@ const SaisieLinky = ({ jourdavant
     <div>
       <form onSubmit={handleSubmit} onAbort={reset}>
       
-      <div className="input-add">
+      <div  >
           <label>Production Kwh</label>
           <input
             onKeyDown={handleKeyDown}
@@ -91,7 +91,7 @@ const SaisieLinky = ({ jourdavant
           />
         </div>
         <i style={{ marginTop: "10px" }}></i>
-        <div className="input-add">
+        <div  >
           <label>H C Bleues</label>
           <input
             onKeyDown={handleKeyDown}
@@ -100,7 +100,7 @@ const SaisieLinky = ({ jourdavant
             onChange={(e) => setListe({ ...liste, hcbleu: e.target.value })}
           />
         </div>
-        <div className="input-add">
+        <div  >
           <label>H P Bleues</label>
           <input
             onKeyDown={handleKeyDown}
@@ -109,7 +109,7 @@ const SaisieLinky = ({ jourdavant
             onChange={(e) => setListe({ ...liste, hpbleu: e.target.value })}
           />
         </div>
-        <div className="input-add">
+        <div  >
           <label>H C Blanches</label>
           <input
             onKeyDown={handleKeyDown}
@@ -118,7 +118,7 @@ const SaisieLinky = ({ jourdavant
             onChange={(e) => setListe({ ...liste, hcblanc: e.target.value })}
           />
         </div>
-        <div className="input-add">
+        <div  >
           <label>H P Blanches</label>
           <input
             onKeyDown={handleKeyDown}
@@ -127,7 +127,7 @@ const SaisieLinky = ({ jourdavant
             onChange={(e) => setListe({ ...liste, hpblanc: e.target.value })}
           />
         </div>
-        <div className="input-add">
+        <div  >
           <label>H C Rouges</label>
           <input
             onKeyDown={handleKeyDown}
@@ -136,7 +136,7 @@ const SaisieLinky = ({ jourdavant
             onChange={(e) => setListe({ ...liste, hcrouge: e.target.value })}
           />
         </div>
-        <div className="input-add">
+        <div >
           <label>H P Rouges</label>
           <input
             onKeyDown={handleKeyDown}
@@ -146,7 +146,7 @@ const SaisieLinky = ({ jourdavant
           />
         </div>
 
-        <div className="input-add">
+        <div  >
           <label>Note</label>
           <input
             onKeyDown={handleKeyDown}
