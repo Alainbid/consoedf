@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { collection, getDocs, query, orderBy, where } from "firebase/firestore";
 import { db } from "../FirebaseFirestore.jsx";
 import "../styles/consomois.scss";
+import { number } from "prop-types";
 
 
 const ConsoParmois = () => {
@@ -31,47 +32,94 @@ const ConsoParmois = () => {
   const [monthlyData, setMonthlyData] = useState([]);
   const lastMonthInputRef = useRef(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [firstMonth, setFirstMonth] = useState('');
-  const [lastMonth, setLastMonth] = useState('');
-  const [dernierMois, setDernierMois] = useState('');
-  const [premierMois, setPremierMois] = useState('');
+  const [premierMois, setPremierMois] = useState();
+  const [dernierMois, setDernierMois] = useState();
+  
 
-  const firstAnnee  = new Date().getFullYear();
-  var lastAnnee = new Date().getFullYear();
-  const quelMois = new Date().getMonth();
-  if(quelMois >= 0 && quelMois <= 4 ){
-    lastAnnee = firstAnnee - 1;
+  var anneeActuelle  = new Date().getFullYear();
+  const moisActuel = new Date().getMonth();
+  var anneeDernière = anneeActuelle;
+  var surDeuxAns = false;
+  //si le mois actuel est compris entre 0 et 4, on décrémente l'année de 1
+  if(moisActuel >= 0 && moisActuel <= 4 && dernierMois < premierMois ){
+    surDeuxAns = true;
+    anneeDernière = anneeActuelle - 1; //la dernière année est l'année précédante
+  }else{surDeuxAns = false; anneeActuelle--;anneeDernière--;} 
+
+  console.log("moisActuel", moisActuel);
+  console.log("anneeDernière", anneeDernière);
+  console.log("anneeActuelle", anneeActuelle);
+
+  var lesMois = {mois: number, an: number};
+  var monthsToFetch = [];  // Array to store the months to fetch
+  var currentMonth = premierMois ;
+
+  console.log("surDeuxAns", surDeuxAns);
+  if(surDeuxAns)  {
+    while ((anneeActuelle > anneeDernière )|| 
+    (anneeActuelle === anneeDernière && currentMonth <= dernierMois  )) {
+    lesMois = {mois: currentMonth, an: anneeDernière};
+    monthsToFetch.push(lesMois);
+    currentMonth++;
+    
+  
+    if (currentMonth > 12) {
+      currentMonth = 0;
+      anneeDernière++;
+      if(anneeActuelle === anneeDernière && currentMonth > dernierMois){
+        break;
+      }
+    }
   }
+  }else{
 
+      while ( currentMonth <= dernierMois ) {
+        lesMois = {mois: currentMonth, an: anneeDernière};
+        monthsToFetch.push(lesMois);
+        currentMonth++;
+        
+      
+        if (currentMonth > 12) {
+          
+            break;
+          
+        }
+      }
+}
+console.log("monthsToFetch", monthsToFetch);
 
-  useEffect(() => {
+   useEffect(() => {
+
     const fetchMonthlyData = async () => {
+
       try {
-        var monthsToFetch = [];
-        for (let i = firstMonth+1; i <= lastMonth +1; i++) {
-          monthsToFetch.push(i);
-        }
-
+       
         const allData = [];
-        for (const mois of monthsToFetch) {
-          const debut = new Date(`${firstAnnee}-${mois - 1}-01`).getTime();
-          const fin = new Date(`${lastAnnee}-${mois}-01`).getTime();
 
-          const collectionRef = collection(db, "edf");
-          const lequery = query(
-            collectionRef,
-            where("date", ">=", debut),
-            where("date", "<=", fin),
-            orderBy("date", "asc")
-          );
+            for (const moisObj of monthsToFetch) {
+              
+              const debut = new Date(`${moisObj.an}-${moisObj.mois }-01`).getTime();
+              const fin = new Date(moisObj.mois === 12 ? `${moisObj.an + 1}-01-01` : `${moisObj.an}-${moisObj.mois + 1}-01`).getTime() - 1;
+              console.log("debut", debut);
 
-          if(monthsToFetch.length > 1) {
-            console.log("monthsToFetch", monthsToFetch);
-            const querySnapshot = await getDocs(lequery);
-            const data = querySnapshot.docs.map((doc) => doc.data());
-            allData.push({ mois, data });
-          }
-        }
+              console.log("fin", fin);
+              const collectionRef = collection(db, "edf");
+              const lequery = query(
+                collectionRef,
+                where("date", ">=", debut),
+                where("date", "<=", fin),
+                orderBy("date", "asc")
+              );
+
+              if(monthsToFetch.length > 1) {
+                console.log("monthsToFetch", monthsToFetch);
+                const querySnapshot = await getDocs(lequery);
+                const data = querySnapshot.docs.map((doc) => doc.data());
+                allData.push({ mois: moisObj.mois, data });
+                console.log("allData", allData);
+              }
+            }
+      
 
         setMonthlyData(allData);
         setIsLoading(false);
@@ -83,7 +131,10 @@ const ConsoParmois = () => {
     };
 
     fetchMonthlyData();
-  }, [lastAnnee, firstMonth, lastMonth, firstAnnee]);
+   }, [dernierMois, premierMois]);
+
+
+
 
   const calculateTotals = (data) => {
     if (data.length < 2) return { subtotals: [], grandTotal: 0 };
@@ -102,23 +153,25 @@ const ConsoParmois = () => {
   };
 
   const verifierFirstMonth = (value) => {
-    if ((value >= 1 && value <= 5) || value > 12) {
-      setFirstMonth(6);
-      setPremierMois  (6);
+    // on vérifie si le mois de début est compris entre 1 et 5 ou supérieur à 12
+    if ((value >= 1 && value <= 5) ) {
+      //setFirstMonth(5);
+      setPremierMois  (5);
     } else {
-      setFirstMonth(value);
+      setPremierMois(value);
     }
+    console.log("premier Mois", premierMois);
     lastMonthInputRef.current.focus();  // Call verifierLastMonth when Enter is pressed
   };
 
   const verifierLastMonth = (value) => {
-  if((value < firstMonth && firstAnnee === lastAnnee )|| value > 12){
+  if((!surDeuxAns)){
       alert("Le mois de fin doit être supérieur au mois de début et inférieur à 12");
-      setLastMonth(12)
       setDernierMois(12);
     }else{
-      setLastMonth(value);
+      setDernierMois(value);
     }
+    console.log("dernier Mois", dernierMois);
   };
 
   return (
@@ -161,7 +214,7 @@ const ConsoParmois = () => {
 </div>
           </form>
 
-          {firstMonth > 0 && lastMonth > 0 && (
+          {premierMois > 0 && dernierMois > 0 && (
             <div>
               {monthlyData.length > 0 ? (
                 monthlyData.map(({ mois, data }) => {
@@ -193,7 +246,7 @@ const ConsoParmois = () => {
                             </li>
                           ))}
                           <strong className="ligne">
-                            Total {monthTag[mois - 2]} = {grandTotal.toFixed(2)} €
+                            Total {monthTag[mois - 1]} = {grandTotal.toFixed(2)} €
                           </strong>
                         </>
                       )}
