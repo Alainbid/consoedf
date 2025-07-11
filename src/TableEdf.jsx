@@ -16,13 +16,22 @@ const TableEdf = () => {
   const [liste, setListe] = useState([]);
   const [loading, setLoading] = useState(true); // Add loading state
   const prix = {
-    prixhcbleu: 0.129,
-    prixhpbleu: 0.161,
-    prixhcblanc: 0.148,
-    prixhpblanc: 0.189,
-    prixhcrouge: 0.157,
-    prixhprouge: 0.756,
+    prixhcbleu: 0.1288,
+    prixhpbleu: 0.1552,
+    prixhcblanc: 0.1447,
+    prixhpblanc: 0.1792,
+    prixhcrouge: 0.1518,
+    prixhprouge: 0.6586,
   };
+  // jusqu'au 28/02/2025
+  // const prix = {
+  //   prixhcbleu: 0.129,
+  //   prixhpbleu: 0.161,
+  //   prixhcblanc: 0.148,
+  //   prixhpblanc: 0.189,
+  //   prixhcrouge: 0.157,
+  //   prixhprouge: 0.756,
+  // };
   const monthTag = [
     "Janvier",
     "Février",
@@ -49,12 +58,12 @@ const TableEdf = () => {
   const mois = new Date().getMonth() + 1;
   const annee = new Date().getFullYear();
   const jour = new Date().getDate();
-  // console.log("mois ", mois);
-  // console.log("jour", jour);
+   console.log("mois ", mois);
+   console.log("jour", jour);
   let debut = 0;
  
-  jour < 3 ?  debut = new Date(annee, mois - 2, 1, 0).getTime() : debut = new Date(annee, mois-1 , 1, 0).getTime();
-  // console.log("debut1 ", debut); 
+  jour < 4 ?  debut = new Date(annee, mois - 2, 1, 0).getTime() : debut = new Date(annee, mois-1 , 1, 0).getTime();
+   console.log("date de départ ", debut); 
 
   // Callback function to update the table when the form is submitted
   const updateTable = async () => {
@@ -62,7 +71,8 @@ const TableEdf = () => {
     let lequery = query(edfCollectionRef, where("date", ">=", debut), orderBy("date", "desc"));
     const updatedData = await getDocs(lequery);
     setListe(updatedData.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-  //  console.log("updatedData ", updatedData);
+   console.log("updatedData ", updatedData);
+    console.log("liste ", liste);
   };
 
   useEffect(() => {
@@ -122,21 +132,22 @@ const TableEdf = () => {
     event.target.style.color = "white";
     event.target.style.fontSize = "0.8rem";
   };
-
+//CHAQUE ANNEE APRES FACTURATION AU 13 F2VRIER IL FAUT
+//REINITIALISER LES DONNEES au 14 / 2
   //pour préparer les données pour le graphique
   const lesdates = liste.map((item) => item.date);
   const revDates = lesdates.reverse();
-  var lesproductions = liste.map((item) => (item.hcbleu - 28680) * prix.prixhcbleu);
+  var lesproductions = liste.map((item) => (item.hcbleu - 31440) * prix.prixhcbleu);
   const revProdHcB = lesproductions.reverse();
-  lesproductions = liste.map((item) => (item.hpbleu - 23964) * prix.prixhpbleu);
+  lesproductions = liste.map((item) => (item.hpbleu - 25993) * prix.prixhpbleu);
   const revProdHpB = lesproductions.reverse();
-  lesproductions = liste.map((item) => (item.hcblanc - 1351) * prix.prixhcblanc);
+  lesproductions = liste.map((item) => (item.hcblanc - 2089) * prix.prixhcblanc);
   const revProdHcBl = lesproductions.reverse();
-  lesproductions = liste.map((item) => (item.hpblanc - 1299) * prix.prixhpblanc);
+  lesproductions = liste.map((item) => (item.hpblanc - 2039) * prix.prixhpblanc);
   const revProdHpBl = lesproductions.reverse();
-  lesproductions = liste.map((item) => (item.hcrouge - 785) * prix.prixhcrouge);
+  lesproductions = liste.map((item) => (item.hcrouge - 1263) * prix.prixhcrouge);
   const revProdHcR = lesproductions.reverse();
-  lesproductions = liste.map((item) => (item.hprouge - 956) * prix.prixhprouge);
+  lesproductions = liste.map((item) => (item.hprouge - 1376) * prix.prixhprouge);
   const revProdHpR = lesproductions.reverse();
 
   return (

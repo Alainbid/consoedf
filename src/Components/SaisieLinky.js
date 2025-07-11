@@ -175,7 +175,9 @@ const SaisieLinky = ({ jourdavant
         </li>
         <li id="totaux" style={{ marginTop: "5px" }}>
           {" "}
-         Total revendu = {((totalProd-4981)*0.1).toFixed(2)}€
+          {/* CHAQUE ANNEE APRES FACTURATION AU 13 F2VRIER IL FAUT
+REINITIALISER LES DONNEES au 14 / 2 */}
+         Total revendu = {((totalProd-6879)*0.1).toFixed(2)}€
         </li><p></p>
       {/* <div>
         

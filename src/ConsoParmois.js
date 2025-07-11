@@ -1,18 +1,17 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import { collection, getDocs, query, orderBy, where } from "firebase/firestore";
-import { db } from "../FirebaseFirestore.jsx";
-import "../styles/consomois.scss";
-import { number } from "prop-types";
+import { db } from "./FirebaseFirestore.jsx";
+import "./styles/consoParmois.scss";
 
-
+//console.log("db :", db);
 const ConsoParmois = () => {
   const prix = {
-    hpbleu: 0.161,
     hcbleu: 0.129,
-    hpblanc: 0.189,
+    hpbleu: 0.161,
     hcblanc: 0.148,
-    hprouge: 0.756,
+    hpblanc: 0.189,
     hcrouge: 0.157,
+    hprouge: 0.756,
   };
   const monthTag = [
     "Janvier",
@@ -39,6 +38,7 @@ const ConsoParmois = () => {
   var anneeActuelle  = new Date().getFullYear();
   const moisActuel = new Date().getMonth();
   var anneeDernière = anneeActuelle;
+
   var surDeuxAns = false;
   //si le mois actuel est compris entre 0 et 4, on décrémente l'année de 1
   if(moisActuel >= 0 && moisActuel <= 4 && dernierMois < premierMois ){
@@ -50,43 +50,44 @@ const ConsoParmois = () => {
   console.log("anneeDernière", anneeDernière);
   console.log("anneeActuelle", anneeActuelle);
 
-  var lesMois = {mois: number, an: number};
-  var monthsToFetch = [];  // Array to store the months to fetch
-  var currentMonth = premierMois ;
+const monthsToFetch = useMemo(() => {
+      let lesMois;
+      const months = [];
+      let currentMonth = premierMois;
 
-  console.log("surDeuxAns", surDeuxAns);
-  if(surDeuxAns)  {
-    while ((anneeActuelle > anneeDernière )|| 
-    (anneeActuelle === anneeDernière && currentMonth <= dernierMois  )) {
-    lesMois = {mois: currentMonth, an: anneeDernière};
-    monthsToFetch.push(lesMois);
-    currentMonth++;
-    
-  
-    if (currentMonth > 12) {
-      currentMonth = 0;
-      anneeDernière++;
-      if(anneeActuelle === anneeDernière && currentMonth > dernierMois){
-        break;
-      }
-    }
-  }
-  }else{
+      console.log("surDeuxAns", surDeuxAns);
+      if (surDeuxAns) {
+        while (
+          anneeActuelle > anneeDernière ||
+          (anneeActuelle === anneeDernière && currentMonth <= dernierMois)
+        ) {
+          lesMois = { mois: currentMonth, an: anneeDernière };
+          months.push(lesMois);
+          currentMonth++;
 
-      while ( currentMonth <= dernierMois ) {
-        lesMois = {mois: currentMonth, an: anneeDernière};
-        monthsToFetch.push(lesMois);
-        currentMonth++;
-        
-      
-        if (currentMonth > 12) {
-          
+          if (currentMonth > 2) {
+            currentMonth = 0;
+            anneeDernière++;
+            if (anneeActuelle === anneeDernière && currentMonth > dernierMois) {
+              break;
+            }
+          }
+        }
+      } else {
+        while (currentMonth <= dernierMois) {
+          lesMois = { mois: currentMonth, an: anneeDernière };
+          months.push(lesMois);
+          currentMonth++;
+
+          if (currentMonth > 12) {
             break;
-          
+          }
         }
       }
-}
-console.log("monthsToFetch", monthsToFetch);
+      console.log("monthsToFetch", months);
+      lesMois = null; // reset lesMois after use
+      return months;
+}, [premierMois, dernierMois, surDeuxAns, anneeActuelle, anneeDernière]);
 
    useEffect(() => {
 
@@ -131,7 +132,7 @@ console.log("monthsToFetch", monthsToFetch);
     };
 
     fetchMonthlyData();
-   }, [dernierMois, premierMois]);
+   }, [dernierMois, premierMois, monthsToFetch]);
 
 
 
@@ -262,6 +263,6 @@ console.log("monthsToFetch", monthsToFetch);
       )}
     </div>
   );
-};
+ };
 
 export default ConsoParmois;
