@@ -5,13 +5,14 @@ import "./styles/consoParmois.scss";
 
 //console.log("db :", db);
 const ConsoParmois = () => {
+  // Prix en euros par kWh pour chaque type de consommation au 1/8/25
   const prix = {
-    hcbleu: 0.129,
-    hpbleu: 0.161,
-    hcblanc: 0.148,
-    hpblanc: 0.189,
-    hcrouge: 0.157,
-    hprouge: 0.756,
+    hcbleu: 0.1232,
+    hpbleu: 0.1494,
+    hcblanc: 0.1391,
+    hpblanc: 0.1730,
+    hcrouge: 0.1460,
+    hprouge: 0.6468,
   };
   const monthTag = [
     "Janvier",
